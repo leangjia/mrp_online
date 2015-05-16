@@ -1,0 +1,108 @@
+<openerp>
+    <data>
+        <template id="pager">
+            <nav>
+                <ul class="pagination">
+                    <li t-attf-class="{{ 'disabled' if page &lt;= 1 else '' }}">
+                        <a t-attf-href="{{('/mrp/mo/page/%d/?search=%s' % (page-1,search)) if page &gt; 1 else '#'}}" aria-label="Previous">
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
+                    <t t-foreach="range(1,page_count+1)" t-as="p">
+                        <li t-attf-class="{{ 'active' if page == p else '' }}">
+                            <a t-attf-href="/mrp/mo/page/{{p}}/?search={{search}}">
+                                <t t-esc="p"/>
+                            </a>
+                        </li>
+                    </t>
+                    <li t-attf-class="{{'disabled' if page &gt;= page_count else '' }}">
+                        <a t-attf-href="{{('/mrp/mo/page/%d/?search=%s' % (page+1,search)) if page &lt; page_count else '#'}}" aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </template>
+
+
+        <template id="index">
+            <t t-call="website.layout">
+                <title>生产订单</title>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <!-- Single button -->
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Action <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                              </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <t t-call="mrp_online.pager"/>
+                        </div>
+                        <div class="col-md-2">
+                            </div>
+                        <div class="col-md-3">
+                            <form class="form-inline" action="/mrp/mo/page/1/">
+                              <div class="form-group">
+                                <input type="text" t-att-value="search" class="form-control" name="search" id="search"/>
+                              </div>
+
+                              <button type="submit" class="btn btn-default">搜索</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <t t-if="len(records)&lt;=0">
+                            <span>找不到符合搜索关键字为：<t t-esc="search"/>的记录。</span>
+                        </t>
+                        <t t-if="len(records)&gt;0">
+                            <table class="table table-striped table-bordered">
+                           <thead>
+                               <tr>
+                                  <th>
+                                      name
+                                  </th>
+                                   <th>
+                                      Product
+                                  </th>
+                                   <th>
+                                      Quality
+                                  </th>
+                                    <th>
+                                      state
+                                  </th>
+                               </tr>
+                           </thead>
+                        <tbody>
+                            <t t-foreach="records" t-as="record">
+                                <tr>
+                                    <td><t t-esc="record.name"/></td>
+                                    <td><t t-esc="record.product_id.name"/></td>
+                                    <td><t t-esc="record.product_qty"/></td>
+                                    <td><t t-esc="record.state"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        </table>
+                        </t>
+                    </div>
+                    <div class="row">
+                        <t t-call="mrp_online.pager"/>
+                    </div>
+                </div>
+
+            </t>
+        </template>
+
+
+    </data>
+</openerp>
